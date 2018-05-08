@@ -1,7 +1,7 @@
 {
   "name": "LeafletPlayback",
   "homepage": "http://leafletplayback.theoutpost.io/",
-  "version": "0.2.3",
+  "version": "0.2.5",
   "authors": [
     "Nicholas Hallahan <nick@theoutpost.io>",
     "Marius Bieliauskas <@recallfx>"

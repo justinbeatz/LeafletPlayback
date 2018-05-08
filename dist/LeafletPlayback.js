@@ -234,7 +234,11 @@ L.Playback.Track = L.Class.extend({
             var tickLen = options.tickLen || 250;
             this._staleTime = options.staleTime || 60*60*1000;
             this._fadeMarkersWhenStale = options.fadeMarkersWhenStale || false;
-            
+            this._fadeMarkersOpacityWhenStale = 0.25;
+            if (options.fadeMarkersOpacityWhenStale !== undefined) {
+                this._fadeMarkersOpacityWhenStale = options.fadeMarkersOpacityWhenStale;
+            }
+
             this._geoJSON = geoJSON;
             this._tickLen = tickLen;
             this._ticks = [];
@@ -507,7 +511,7 @@ L.Playback.Track = L.Class.extend({
                     }
                     
                     if(this.trackStaleAtTick(timestamp)) {
-                        this._marker.setOpacity(0.25);
+                        this._marker.setOpacity(this._fadeMarkersOpacityWhenStale);
                     }
                 }
 				
