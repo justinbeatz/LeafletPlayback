@@ -140,14 +140,8 @@ L.Playback.MoveableMarker = L.Marker.extend({
         	
         if(options.labels)
         {
-            if(this.bindLabel)
-            {
-                this.bindLabel(this.getPopupContent());
-            }
-            else
-            {
-                console.log("Label binding requires leaflet-label (https://github.com/Leaflet/Leaflet.label)");
-            }
+            //Replaced leaflet-label with L.Tooltip. First included in Leaflet 1.0.
+            this.bindTooltip(this.getPopupContent());
         }
     },
     
