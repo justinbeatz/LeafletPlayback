@@ -1002,13 +1002,13 @@ L.Playback = L.Playback.Clock.extend({
 
             this.addData(geoJSON, this.getTime());
 
-            if (!setMarkerAtStart) {
+            if (setMarkerAtStart !== undefined && !setMarkerAtStart) {
                 this.setCursor(this.getEndTime());
             } else {
-                this.setCursor(this.getStartTime());                
+                this.setCursor(this.getStartTime());
             }
 
-            
+
         },
 
         // bad implementation
