@@ -12,10 +12,11 @@ document.addEventListener('DOMContentLoaded', function(){
             // return Number(elem.toFixed(7));
             return Number(elem);
         });
-        console.log(coords);
+        // console.log(coords);
         coordinates.push(coords);
         time.push(newData[i].time * 1000);
     }
+
     var geoJson = {
         type: "Feature",
         geometry: {
@@ -28,16 +29,19 @@ document.addEventListener('DOMContentLoaded', function(){
         }
     };
 
-    // console.log(geoJson);
+    console.log(geoJson);
 
     // Get start/end times
     // var startTime = new Date(demoTracks[0].properties.time[0]);
     var startTime = new Date(newData[0].time * 1000);
     // var endTime = new Date(demoTracks[0].properties.time[demoTracks[0].properties.time.length - 1]);
     var endTime = new Date(newData[newData.length -1].time * 1000);
-
+    console.log(startTime);
+    console.log(endTime);
+    // Create a group DataSet
+    var timelineGroup = new vis.DataSet([{ id: 0, content: newData[0].category }]);
     // Create a DataSet with data
-    var timelineData = new vis.DataSet([{ start: startTime, end: endTime, content: 'Demo GPS Tracks' }]);
+    var timelineData = new vis.DataSet([{ id: 0, group: 0, start: startTime, end: endTime, content: 'Demo GPS Tracks' }]);
 
     // Set timeline options
     var timelineOptions = {
@@ -47,8 +51,10 @@ document.addEventListener('DOMContentLoaded', function(){
     };
 
     // Setup timeline
-    var timeline = new vis.Timeline(document.getElementById('timeline'), timelineData, timelineOptions);
-
+    var container = document.getElementById('timeline');
+    var timeline = new vis.Timeline(container, timelineData, timelineOptions);
+    container.style.position = 'absolute'; // bug in new Timeline v5.0.0 ?
+    timeline.setGroups(timelineGroup);
     // Set custom time marker (blue)
     timeline.addCustomTime(startTime);
 
@@ -59,10 +65,12 @@ document.addEventListener('DOMContentLoaded', function(){
 
     // Center map and default zoom level
     // map.setView([44.5, -123.6], 10);
-    map.setView([19.1612274, -70.9580545], 10);
+    map.setView([19.1612274, -70.9580545], 8);
 
     // Adds the background layer to the map
     map.addLayer(basemapLayer);
+
+    // L.polyline(coordinates).addTo(map);
 
     // =====================================================
     // =============== Playback ============================
@@ -110,6 +118,10 @@ document.addEventListener('DOMContentLoaded', function(){
     var playback = new L.Playback(map, null, onPlaybackTimeChange, playbackOptions);
 
     playback.setData(geoJson);
+    var coords = coordinates.map(function(elem) {
+        return elem.reverse();
+    });
+    L.polyline(coords).addTo(map);
     // playback.addData(geoJson);
 
     // Uncomment to test data reset;
