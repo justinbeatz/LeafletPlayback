@@ -2,6 +2,8 @@ document.addEventListener('DOMContentLoaded', function(){
     // setup data
     var coordinates = [];
     var time = [];
+    var speed = [];
+    var heading = [];
     for (var i = 0; i < newData.length; i++) {
         var coords = newData[i].coords.split(",");
 
@@ -9,12 +11,13 @@ document.addEventListener('DOMContentLoaded', function(){
             if (elem.length > 10) {
                 return Number(elem.slice(0, -6));
             }
-            // return Number(elem.toFixed(7));
             return Number(elem);
         });
         // console.log(coords);
         coordinates.push(coords);
         time.push(newData[i].time * 1000);
+        speed.push(newData[i].speed);
+        heading.push(newData[0].course);
     }
 
     var geoJson = {
@@ -25,7 +28,9 @@ document.addEventListener('DOMContentLoaded', function(){
         },
         properties: {
           path_options: { color: "red" },
-          time: time
+          time: time,
+          speed: speed,
+          heading: heading
         }
     };
 
@@ -81,7 +86,7 @@ document.addEventListener('DOMContentLoaded', function(){
 
         playControl: true,
         dateControl: true,
-        showTracksByDefault: true,
+        showTracksByDefault: false,
 
         // layer and marker options
         layer : {
@@ -121,7 +126,8 @@ document.addEventListener('DOMContentLoaded', function(){
     var coords = coordinates.map(function(elem) {
         return elem.reverse();
     });
-    L.polyline(coords).addTo(map);
+    var polyline = L.polyline(coords).addTo(map);
+    map.fitBounds(polyline.getBounds());
     // playback.addData(geoJson);
 
     // Uncomment to test data reset;

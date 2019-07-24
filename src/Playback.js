@@ -25,6 +25,7 @@ L.Playback = L.Playback.Clock.extend({
             sliderControl: false,
             showTracksByDefault: false,
             setMarkerAtStart: true,
+            showCircleMarker: true,
 
             // options
             layer: {

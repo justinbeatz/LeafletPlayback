@@ -947,6 +947,7 @@ L.Playback = L.Playback.Clock.extend({
             sliderControl: false,
             showTracksByDefault: false,
             setMarkerAtStart: true,
+            showCircleMarker: true,
 
             // options
             layer: {
@@ -1041,6 +1042,9 @@ L.Playback = L.Playback.Clock.extend({
 
         destroy: function() {
             this.clearData();
+            console.log(this.playControl);
+            console.log(this.sliderControl);
+            
             if (this.playControl) {
                 this._map.removeControl(this.playControl);
             }
