@@ -120,9 +120,7 @@ L.Playback = L.Playback.Clock.extend({
 
         destroy: function() {
             this.clearData();
-            console.log(this.playControl);
-            console.log(this.sliderControl);
-            
+
             if (this.playControl) {
                 this._map.removeControl(this.playControl);
             }

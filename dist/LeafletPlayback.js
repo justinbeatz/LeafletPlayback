@@ -116,70 +116,73 @@ L.Playback.Util = L.Class.extend({
 
 L.Playback = L.Playback || {};
 
-L.Playback.MoveableMarker = L.Marker.extend({    
-    initialize: function (startLatLng, options, feature) {    
+L.Playback.MoveableMarker = L.Marker.extend({
+    initialize: function (startLatLng, options, feature) {
         var marker_options = options.marker || {};
 
-        if (marker_options instanceof Function) {        
+        if (marker_options instanceof Function) {
             marker_options = marker_options(feature);
         }
-        
+
         L.Marker.prototype.initialize.call(this, startLatLng, marker_options);
-        
+
         this.popupContent = '';
         this.feature = feature;
-		
+
         if (marker_options.getPopup){
-            this.popupContent = marker_options.getPopup(feature);            
+            this.popupContent = marker_options.getPopup(feature);
         }
-        
+
         if(options.popups)
         {
             this.bindPopup(this.getPopupContent() + startLatLng.toString());
         }
-        	
+
         if(options.labels)
         {
             //Replaced leaflet-label with L.Tooltip. First included in Leaflet 1.0.
             this.bindTooltip(this.getPopupContent());
         }
     },
-    
+
     getPopupContent: function() {
         if (this.popupContent !== ''){
             return '<b>' + this.popupContent + '</b><br/>';
         }
-        
+
         return '';
     },
 
     move: function (latLng, transitionTime) {
         // Only if CSS3 transitions are supported
         if (L.DomUtil.TRANSITION) {
-            if (this._icon) { 
-                this._icon.style[L.DomUtil.TRANSITION] = 'all ' + transitionTime + 'ms linear'; 
+            if (this._icon) {
+                this._icon.style[L.DomUtil.TRANSITION] = 'all ' + transitionTime + 'ms linear';
                 if (this._popup && this._popup._wrapper)
-                    this._popup._wrapper.style[L.DomUtil.TRANSITION] = 'all ' + transitionTime + 'ms linear'; 
+                    this._popup._wrapper.style[L.DomUtil.TRANSITION] = 'all ' + transitionTime + 'ms linear';
             }
-            if (this._shadow) { 
-                this._shadow.style[L.DomUtil.TRANSITION] = 'all ' + transitionTime + 'ms linear'; 
+            if (this._shadow) {
+                this._shadow.style[L.DomUtil.TRANSITION] = 'all ' + transitionTime + 'ms linear';
             }
         }
         this.setLatLng(latLng);
         if (this._popup) {
             this._popup.setContent(this.getPopupContent() + this._latlng.toString());
-        }    
+        }
+        // if(this._map) {
+        //     this._map.panTo(this.getLatLng());
+        // }
     },
-    
+
     // modify leaflet markers to add our roration code
     /*
-     * Based on comments by @runanet and @coomsie 
+     * Based on comments by @runanet and @coomsie
      * https://github.com/CloudMade/Leaflet/issues/386
      *
      * Wrapping function is needed to preserve L.Marker.update function
      */
     _old__setPos:L.Marker.prototype._setPos,
-    
+
     _updateImg: function (i, a, s) {
         a = L.point(s).divideBy(2)._subtract(L.point(a));
         var transform = '';
@@ -742,36 +745,37 @@ L.Playback = L.Playback || {};
 L.Playback.TracksLayer = L.Class.extend({
     initialize : function (map, options) {
         var layer_options = options.layer || {};
-        
+
         if (layer_options instanceof Function) {
-            layer_options = layer_options(feature);
+            layer_options = layer_options(options.feature);
         }
-        
+
         if (!layer_options.pointToLayer) {
             layer_options.pointToLayer = function (featureData, latlng) {
                 return new L.CircleMarker(latlng, { radius : 5 });
             };
         }
-    
+
         this.layer = new L.GeoJSON(null, layer_options);
 
         if (options.showTracksByDefault) {
             this.layer.addTo(map);
+            
+            // TODO: Temporary moved here
+            var overlayControl = {
+                'GPS Tracks' : this.layer
+            };
+
+            L.control.layers(null, overlayControl, {
+                collapsed : false
+            }).addTo(map);
         }
-
-        var overlayControl = {
-            'GPS Tracks' : this.layer
-        };
-
-        L.control.layers(null, overlayControl, {
-            collapsed : false
-        }).addTo(map);
     },
 
     // clear all geoJSON layers
     clearLayer : function(){
         for (var i in this.layer._layers) {
-            this.layer.removeLayer(this.layer._layers[i]);            
+            this.layer.removeLayer(this.layer._layers[i]);
         }
     },
 
@@ -780,6 +784,7 @@ L.Playback.TracksLayer = L.Class.extend({
         this.layer.addData(geoJSON);
     }
 });
+
 L.Playback = L.Playback || {};
 
 L.Playback.DateControl = L.Control.extend({
@@ -1042,9 +1047,7 @@ L.Playback = L.Playback.Clock.extend({
 
         destroy: function() {
             this.clearData();
-            console.log(this.playControl);
-            console.log(this.sliderControl);
-            
+
             if (this.playControl) {
                 this._map.removeControl(this.playControl);
             }
