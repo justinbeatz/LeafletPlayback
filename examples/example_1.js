@@ -28,6 +28,7 @@ document.addEventListener('DOMContentLoaded', function(){
         },
         properties: {
           path_options: { color: "red" },
+          title: "Scooter",
           time: time,
           speed: speed,
           heading: heading
@@ -41,18 +42,40 @@ document.addEventListener('DOMContentLoaded', function(){
     var startTime = new Date(newData[0].time * 1000);
     // var endTime = new Date(demoTracks[0].properties.time[demoTracks[0].properties.time.length - 1]);
     var endTime = new Date(newData[newData.length -1].time * 1000);
-    console.log(startTime);
-    console.log(endTime);
+    // console.log(startTime);
+    // console.log(endTime);
     // Create a group DataSet
-    var timelineGroup = new vis.DataSet([{ id: 0, content: newData[0].category }]);
+    var timelineGroup = new vis.DataSet([{ id: 0, content: newData[0].category, subgroupStack: false }]);
+    var items = [];
+    var endCount = 0;
+    for (var i = 0; i < newData.length; i++) {
+
+        if (i < newData.length - 1) {
+            endCount = i + 1;
+        }
+
+        items.push({
+            id: i,
+            group: 0,
+            subgroup:1,
+            start: new Date(newData[i].time * 1000),
+            end: new Date(newData[endCount].time * 1000),
+            type: 'background',
+            subgroupOrder:0,
+            content: ""
+        });
+    }
     // Create a DataSet with data
-    var timelineData = new vis.DataSet([{ id: 0, group: 0, start: startTime, end: endTime, content: 'Demo GPS Tracks' }]);
+    // var timelineData = new vis.DataSet([{ id: 0, group: 0, start: startTime, end: endTime, content: 'Demo GPS Tracks' }]);
+    var timelineData = new vis.DataSet(items);
 
     // Set timeline options
     var timelineOptions = {
-      "width":  "100%",
-      "height": "120px",
-      "type": "box",
+      width:  "100%",
+      height: "100px",
+      maxHeight: "120px",
+      stack: false,
+      stackSubgroups: true
     };
 
     // Setup timeline

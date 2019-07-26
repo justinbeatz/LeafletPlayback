@@ -33,8 +33,7 @@ L.Playback.Track = L.Class.extend({
             var t = currSampleTime;  // t is used to iterate through tick times
             var nextSampleTime = sampleTimes[1];
             var tmod = t % tickLen; // ms past a tick time
-            var rem,
-            ratio;
+            var rem, ratio;
 
             // handle edge case of only one t sample
             if (sampleTimes.length === 1) {
