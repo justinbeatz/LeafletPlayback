@@ -1030,8 +1030,8 @@ L.Playback = L.Playback.Clock.extend({
               }
             } else {
               if (geoJSON.type == "FeatureCollection") {
-                for (var i = 0, len = geoJSON.features.length; i < len; i++) {
-                  this._trackController.addTrack(new L.Playback.Track(geoJSON.features[i], this.options), ms);
+                for (var j = 0, fLen = geoJSON.features.length; j < fLen; j++) {
+                  this._trackController.addTrack(new L.Playback.Track(geoJSON.features[j], this.options), ms);
                 }
               } else {
                 this._trackController.addTrack(new L.Playback.Track(geoJSON, this.options), ms);

@@ -4,6 +4,8 @@ document.addEventListener('DOMContentLoaded', function(){
     var time = [];
     var speed = [];
     var heading = [];
+    var items = [];
+    var endCount = 0;
     for (var i = 0; i < newData.length; i++) {
         var coords = newData[i].coords.split(",");
 
@@ -18,6 +20,21 @@ document.addEventListener('DOMContentLoaded', function(){
         time.push(newData[i].time * 1000);
         speed.push(newData[i].speed);
         heading.push(newData[0].course);
+
+        if (i < newData.length - 1) {
+            endCount = i + 1;
+        }
+
+        items.push({
+            id: i,
+            group: 0,
+            subgroup:1,
+            start: new Date(newData[i].time * 1000),
+            end: new Date(newData[endCount].time * 1000),
+            type: 'background',
+            subgroupOrder:0,
+            content: ""
+        });
     }
 
     var geoJson = {
@@ -46,25 +63,6 @@ document.addEventListener('DOMContentLoaded', function(){
     // console.log(endTime);
     // Create a group DataSet
     var timelineGroup = new vis.DataSet([{ id: 0, content: newData[0].category, subgroupStack: false }]);
-    var items = [];
-    var endCount = 0;
-    for (var i = 0; i < newData.length; i++) {
-
-        if (i < newData.length - 1) {
-            endCount = i + 1;
-        }
-
-        items.push({
-            id: i,
-            group: 0,
-            subgroup:1,
-            start: new Date(newData[i].time * 1000),
-            end: new Date(newData[endCount].time * 1000),
-            type: 'background',
-            subgroupOrder:0,
-            content: ""
-        });
-    }
     // Create a DataSet with data
     // var timelineData = new vis.DataSet([{ id: 0, group: 0, start: startTime, end: endTime, content: 'Demo GPS Tracks' }]);
     var timelineData = new vis.DataSet(items);
@@ -146,10 +144,10 @@ document.addEventListener('DOMContentLoaded', function(){
     var playback = new L.Playback(map, null, onPlaybackTimeChange, playbackOptions);
 
     playback.setData(geoJson);
-    var coords = coordinates.map(function(elem) {
+    var polyCoords = coordinates.map(function(elem) {
         return elem.reverse();
     });
-    var polyline = L.polyline(coords).addTo(map);
+    var polyline = L.polyline(polyCoords).addTo(map);
     map.fitBounds(polyline.getBounds());
     // playback.addData(geoJson);
 
@@ -162,7 +160,7 @@ document.addEventListener('DOMContentLoaded', function(){
     // A callback so timeline is set after changing playback time
     function onPlaybackTimeChange (ms) {
         timeline.setCustomTime(new Date(ms));
-    };
+    }
 
     //
     function onCustomTimeChange(properties) {
